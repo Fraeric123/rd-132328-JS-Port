@@ -1323,7 +1323,7 @@
                 this.levelRenderer = new LevelRenderer(this.level, this.scene);
                 this.player = new Player(this.level);
 
-                for (let i = 0; i < 50; i++) {
+                for (let i = 0; i < 100; i++) {
                     this.zombies.push(new Zombie(this.level, 128, 64, 128, this.scene));
                 }
 
@@ -1509,7 +1509,9 @@
                         this.loadLevel();
                     }
                     if (e.code === 'KeyG') {
-                        this.zombies.push(new Zombie(this.level, this.player.x, this.player.y, this.player.z, this.scene));
+                        const zomb = new Zombie(this.level, 0, 0, 0, this.scene);
+                        zomb.setPos(this.player.x, this.player.y, this.player.z);
+                        this.zombies.push(zomb);
                     }
                 });
 
@@ -1519,7 +1521,7 @@
             tick() {
                 this.player.tick(this.camera);
 
-                this.zombies.forEach(z => z.tick());
+                this.zombies.forEach(z => z.tick());                
             }
 
             render() {
