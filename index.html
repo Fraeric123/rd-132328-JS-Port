@@ -54,7 +54,7 @@
 
         class AABB {
             constructor(x0, y0, z0, x1, y1, z1) {
-                this.epsilon = 0.0;
+                this.epsilon = 0.001;
                 this.x0 = x0;
                 this.y0 = y0;
                 this.z0 = z0;
@@ -301,13 +301,30 @@
                         indices.push(vertexIndex + offset);
                     }
 
+                    const uValues = polyVertices.map(v => v.u);
+                    const vValues = polyVertices.map(v => v.v);
+                    const minU = Math.min(...uValues);
+                    const maxU = Math.max(...uValues);
+                    const minV = Math.min(...vValues);
+                    const maxV = Math.max(...vValues);
+
                     for (const v of polyVertices) {
                         positions.push(v.pos.x, v.pos.y, v.pos.z);
 
-                        const u = v.u / 64.0;
-                        const vCoord = 1.0 - (v.v / 32.0);
+                        let u = v.u;
+                        let vOrig = v.v;
 
-                        uvs.push(u, vCoord);
+                        const pad = 0.005;
+
+                        if (u === minU) u += pad;
+                        if (u === maxU) u -= pad;
+                        if (vOrig === minV) vOrig += pad;
+                        if (vOrig === maxV) vOrig -= pad;
+
+                        let uFinal = u / 64.0;
+                        let vFinal = 1.0 - (vOrig / 32.0);
+
+                        uvs.push(uFinal, vFinal);
                     }
 
                     vertexIndex += 4;
@@ -466,6 +483,7 @@
 
                 texture.magFilter = THREE.NearestFilter;
                 texture.minFilter = THREE.NearestFilter;
+                texture.generateMipmaps = false;
                 texture.flipY = true;
 
                 this.group = new THREE.Group();
@@ -902,11 +920,13 @@
             }
 
             render(t, level, layer, x, y, z) {
-                const u0 = (this.tex % 16) / 16.0;
-                const u1 = u0 + (1 / 16.0);
+                const eps = 0.0001;
+
+                const u0 = (this.tex % 16) / 16.0 + eps;
+                const u1 = u0 + (1 / 16.0) - 2 * eps;
                 const row = Math.floor(this.tex / 16);
-                const v1 = 1.0 - (row / 16.0);
-                const v0 = 1.0 - ((row + 1) / 16.0);
+                const v1 = 1.0 - (row / 16.0) - eps;
+                const v0 = 1.0 - ((row + 1) / 16.0) + eps;
 
                 const c1 = 1.0;
                 const c2 = 0.8;
@@ -1521,7 +1541,7 @@
             tick() {
                 this.player.tick(this.camera);
 
-                this.zombies.forEach(z => z.tick());                
+                this.zombies.forEach(z => z.tick());
             }
 
             render() {
