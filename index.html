@@ -1322,6 +1322,7 @@
 
                 this.scene = new THREE.Scene();
                 //this.scene.fog = new THREE.FogExp2(this.fogColor, 0.01);
+
                 this.selectionMaterial = new THREE.MeshBasicMaterial({
                     color: 0xffffff,
                     transparent: true,
@@ -1333,10 +1334,12 @@
                     polygonOffsetFactor: -1,
                     polygonOffsetUnits: -1
                 });
-                this.selectionMesh = new THREE.Mesh(new THREE.PlaneGeometry(1.002, 1.002), this.selectionMaterial);
+                this.selectionMesh = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), this.selectionMaterial);
                 this.selectionMesh.visible = false;
                 this.selectionMesh.renderOrder = 999;
+
                 this.scene.add(this.selectionMesh);
+
                 this.camera = new THREE.PerspectiveCamera(70, this.width / this.height, 0.05, 1000.0);
 
                 this.level = new Level(256, 256, 64);
@@ -1561,7 +1564,7 @@
                     this.selectionMesh.position.set(hit.x + 0.5, hit.y + 0.5, hit.z + 0.5);
                     this.selectionMesh.rotation.set(0, 0, 0);
 
-                    const offset = 0.501;
+                    const offset = 0.5;
                     if (hit.f === 0) { this.selectionMesh.position.y -= offset; this.selectionMesh.rotation.x = Math.PI / 2; }
                     if (hit.f === 1) { this.selectionMesh.position.y += offset; this.selectionMesh.rotation.x = Math.PI / 2; }
                     if (hit.f === 2) { this.selectionMesh.position.z -= offset; }
