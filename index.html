@@ -467,6 +467,23 @@
             }
         }
 
+        class Textures {
+            static loadTexture(path) {
+                const loader = new THREE.TextureLoader();
+                const texture = loader.load(path);
+                texture.magFilter = THREE.NearestFilter;
+                texture.minFilter = THREE.NearestFilter;
+                return texture;
+            }
+        }
+
+        const texture = Textures.loadTexture('./textures/char.png');
+
+        texture.magFilter = THREE.NearestFilter;
+        texture.minFilter = THREE.NearestFilter;
+        texture.generateMipmaps = false;
+        texture.flipY = true;
+
         class Zombie extends Entity {
             constructor(level, x, y, z, scene) {
                 super(level);
@@ -478,13 +495,6 @@
                 this.timeOffs = Math.random() * 1239813;
                 this.rot = Math.random() * Math.PI * 2;
                 this.speed = 1.0;
-
-                const texture = Textures.loadTexture('./textures/char.png');
-
-                texture.magFilter = THREE.NearestFilter;
-                texture.minFilter = THREE.NearestFilter;
-                texture.generateMipmaps = false;
-                texture.flipY = true;
 
                 this.group = new THREE.Group();
                 scene.add(this.group);
@@ -592,16 +602,6 @@
                 this.arm1.render();
                 this.leg0.render();
                 this.leg1.render();
-            }
-        }
-
-        class Textures {
-            static loadTexture(path) {
-                const loader = new THREE.TextureLoader();
-                const texture = loader.load(path);
-                texture.magFilter = THREE.NearestFilter;
-                texture.minFilter = THREE.NearestFilter;
-                return texture;
             }
         }
 
